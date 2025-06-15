@@ -22,6 +22,8 @@ func main() {
 }
 
 func rootPath(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 	_, err := w.Write([]byte("Hello World"))
 	if err != nil {
 		log.Fatal(err)

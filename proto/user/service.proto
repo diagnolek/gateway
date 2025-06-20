@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+package service;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "gateway/pkg/adapter/grpc";
+
+service UserService {
+  rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
+  rpc LoginUser(LoginUserRequest) returns (LoginUserResponse) {}
+  rpc GetUserInfo(GetUserInfoRequest) returns (GetUserInfoResponse) {}
+  // Chat
+  rpc SendMessage(SendMessageRequest) returns (google.protobuf.Empty) {}
+  rpc SubscribeToChat(google.protobuf.Empty) returns (stream StreamMessage) {}
+  rpc GetMessageHistory(GetMessageHistoryRequest) returns (Messages) {}
+}
+
+message CreateUserRequest {
+  string name = 1;
+  string last_name = 2;
+  string email = 3;
+  string password = 4;
+}
+
+message CreateUserResponse {}
+
+message LoginUserRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message LoginUserResponse {
+  string accessToken = 1;
+}
+
+message GetUserInfoRequest {}
+
+message GetUserInfoResponse {
+  string email = 1;
+  string name = 2;
+  string last_name = 3;
+}
+
+message StreamMessage {
+  oneof body {
+    UserList list = 1;
+    Messages messages = 2;
+  }
+}
+
+message UserList {
+  repeated User user = 1;
+}
+
+message User {
+  int64 user_id = 1;
+  string name = 2;
+  string last_name = 3;
+}
+
+message Messages {
+  repeated Message messages = 1;
+}
+
+message Message {
+  int64 from = 1;
+  int64 to = 2;
+  int64 date = 3;
+  string text = 4;
+}
+
+message SendMessageRequest {
+  int64 to = 1;
+  string text = 2;
+}
+
+message GetMessageHistoryRequest {
+  int64 user_id = 1;
+}

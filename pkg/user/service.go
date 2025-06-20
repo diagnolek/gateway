@@ -3,6 +3,8 @@ package user
 import (
 	"fmt"
 	"gateway/pkg/helpers"
+	"sort"
+	"time"
 )
 
 type UserService interface {
@@ -10,6 +12,10 @@ type UserService interface {
 	Login(email string, password string) (string, error)
 	GetUserInfo(id uint) (UserInfo, error)
 	Authorize(accessToken string) (uint, error)
+
+	//Chat
+	SendMessage(message Message) error
+	GetMessageHistory(from uint, to uint) (Messages, error)
 }
 
 type userService struct {
@@ -107,5 +113,30 @@ func (u *userService) Authorize(accessToken string) (uint, error) {
 		return 0, ErrUnauthorized
 	}
 	return user.ID, nil
+
+}
+
+func (u *userService) SendMessage(message Message) error {
+	message.Date = int(time.Now().Unix())
+	err := u.infra.CreateMessage(message)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (u *userService) GetMessageHistory(from uint, to uint) (Messages, error) {
+	fromMessages, err := u.infra.GetMessageHistory(from, to)
+	if err != nil {
+		return []Message{}, err
+	}
+	toMessages, err := u.infra.GetMessageHistory(to, from)
+	if err != nil {
+		return []Message{}, err
+	}
+	fromMessages = append(fromMessages, toMessages...)
+	sort.Sort(fromMessages)
+
+	return fromMessages, nil
 
 }

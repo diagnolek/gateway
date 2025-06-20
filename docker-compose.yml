@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    restart: on-failure
+    depends_on:
+      - database
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    environment:
+      WAIT_HOSTS: database:5432
+      POSTGRES_DSN: postgres://gatewayuser:gatewaypass@database:5432/gatewaydb?sslmode=disable
+
+  database:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=gatewayuser
+      - POSTGRES_PASSWORD=gatewaypass
+      - POSTGRES_DB=gatewaydb
+    ports:
+      - "5432:5432"

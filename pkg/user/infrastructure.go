@@ -11,6 +11,9 @@ type UserInfrastructure interface {
 	GetUserByEmail(email string) (User, error)
 	GetUserByToken(accessToken string) (User, error)
 	UpdateAccessToken(id uint, newAccessToken string) error
+	//Chat
+	CreateMessage(message Message) error
+	GetMessageHistory(from uint, to uint) (Messages, error)
 }
 
 type userInfra struct {
@@ -80,4 +83,24 @@ func (u *userInfra) UpdateAccessToken(id uint, newAccessToken string) error {
 	}
 	return nil
 
+}
+
+func (u *userInfra) CreateMessage(message Message) error {
+	result := u.db.Create(&message)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func (u *userInfra) GetMessageHistory(from uint, to uint) (Messages, error) {
+	messages := []Message{}
+	result := u.db.Where("from_user = ? AND to_user = ?", from, to).Find(&messages)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return []Message{}, nil
+		}
+		return []Message{}, result.Error
+	}
+	return messages, nil
 }

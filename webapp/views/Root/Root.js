@@ -5,25 +5,19 @@ import Menu from "../../components/Menu/Menu";
 import HomeView from "../HomeView/HomeView";
 import EthernetView from "../NetworkView/EthernetView";
 import ChatView from "../FeatureView/ChatView";
+import Logo from "../../components/Header/Logo";
 
 const Root = () => {
-    // const [fetchedText, setFetchedText] = useState('');
-    //
-    // useEffect(() => {
-    //     fetch('http://localhost:8080')
-    //         .then((response) => response.text())
-    //         .then((data) => setFetchedText(data))
-    //         .catch((err) => console.error('Error fetching data:', err));
-    // }, []);
 
     return (
         <BrowserRouter>
             <div className="container">
-                <div className="columns">
-                    <div className="column col-3">
+                <div className="columns root-container">
+                    <div className="column col-3 root-menu">
+                        <Logo />
                         <Menu />
                     </div>
-                    <div className="column col-9">
+                    <div className="column col-9 root-content">
                         <Header />
                         <Routes>
                             <Route path="/" element={<HomeView />} />

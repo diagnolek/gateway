@@ -4,3 +4,4 @@ build
 package-lock.json
 database.db
 .env
+test.html

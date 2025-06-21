@@ -1,2 +1,13 @@
 
-@import '../node_modules/spectre.css/src/spectre.scss';
+
+@import 'spectre.css/src/spectre.scss';
+@import 'spectre.css/src/spectre-exp.scss';
+@import 'spectre.css/src/spectre-icons.scss';
+
+.root-container {
+  height: 100vh;
+}
+
+.root-menu {
+  border-right: 2px solid #ccc;
+}
